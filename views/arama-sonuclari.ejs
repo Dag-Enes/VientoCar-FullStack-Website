@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yolculuk Ara - Viento Car</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        /* --- GENEL AYARLAR --- */
+        html,body{height:100%}
+        body{
+            line-height:1.6;
+            color:#333;
+            background: linear-gradient(180deg,var(--bg),#ffffff);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* --- LOGO VE HEADER --- */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-img { height: 100%; width: auto; max-height: 80px; max-width: 150px; object-fit: contain; border-radius: 50px; }
+        .logo span { color: white; }
+
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, #0c4488 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        /* --- GERİ DÖN BUTONU --- */
+        .btn-back-home {
+            display: flex; align-items: center; gap: 8px; padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px; color: white !important; text-decoration: none;
+            font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(5px);
+        }
+        .btn-back-home:hover {
+            background: var(--gold); border-color: var(--gold);
+            color: var(--dark) !important; transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        /* --- KART TASARIMI --- */
+        .arama-sonuc-container { max-width: 1000px; margin: 3rem auto; padding: 0 1.5rem; }
+        
+        .page-header {
+            background: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); border-left: 5px solid var(--gold);
+        }
+        .page-header h1 { font-size: 1.8rem; color: #0a1e4a; margin-bottom: 0.5rem; font-weight: 700; }
+
+        .yolculuk-kart {
+            background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;
+            border: 1px solid #f0f0f0; position: relative;
+        }
+        .yolculuk-kart:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--gold); }
+
+        .yolculuk-ust { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .surucu-bilgi { display: flex; align-items: center; gap: 1rem; }
+        .surucu-avatar-img {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: none;
+            color: #0a1e4a; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1.2rem;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .guzergah-cubuk {
+            display: flex; align-items: center; gap: 2rem; margin-bottom: 1.5rem;
+            background: #f8f9fa; padding: 1rem 1.5rem; border-radius: 12px;
+        }
+        .sehir { font-weight: 700; color: #0a1e4a; font-size: 1.1rem; }
+        .zaman { color: #6c757d; font-size: 0.9rem; }
+        .ok-isareti { flex-grow: 1; height: 2px; background: var(--gold); position: relative; }
+
+        /* --- BUTONLAR --- */
+        .card-actions { display: flex; gap: 10px; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; }
+        .btn-modern { padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-modern-edit { background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+        .btn-modern-edit:hover { background-color: #0d6efd; color: white; }
+        .btn-modern-delete { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; }
+        .btn-modern-delete:hover { background-color: #dc3545; color: white; }
+        .btn-modern-primary { background-color: #0a1e4a; color: white; margin-left: auto; }
+        .btn-modern-primary:hover { background-color: #153375; transform: translateY(-2px); }
+
+        /* --- MODAL --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-box { background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from {transform: translateY(30px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .form-group { flex: 1; margin-bottom: 15px; }
+        .form-group label { font-size: 0.9rem; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .modal-btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-modal-save { flex: 2; background: #0a1e4a; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-modal-cancel { flex: 1; background: #f1f3f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        footer { background: #0a1e4a; color: white; padding: 4rem 0 2rem; margin-top: 4rem; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; padding: 0 2rem; }
+        .footer-section h3 { color: var(--gold); margin-bottom: 1.5rem; font-size: 1.3rem; }
+        .footer-section ul { list-style: none; padding: 0; }
+        .footer-section ul li { margin-bottom: 0.8rem; }
+        .footer-section a { color: #b0b8c9; text-decoration: none; transition: 0.3s; }
+        .footer-section a:hover { color: var(--gold); }
+        .footer-bottom { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); color: #b0b8c9; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid" style="max-width: 1200px; display: flex; justify-content: space-between;">
+                
+                <a href="/index" class="logo">
+                    <img src="images/viento_car_logo.jpg" alt="Viento Car Logo" class="logo-img">
+                    <span>Viento</span> Car
+                </a>
+
+                <a href="/klonSayfa" class="btn-back-home">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                    </svg>
+                    Ana Sayfaya Dön
+                </a>
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="arama-sonuc-container">
+        
+        <div class="card p-4 mb-4 shadow-sm" style="border-radius: 15px; border: 1px solid #eee;">
+            <h4 style="color: #0a1e4a; margin-bottom: 20px;"><i class="bi bi-funnel-fill"></i> Yolculuk Ara</h4>
+            
+            <form action="/arama-sonuclari" method="GET">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Nereden</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-geo-alt"></i></span>
+                            <input type="text" name="nereden" class="form-control" placeholder="Şehir..." value="<%= locals.aramaKriterleri ? aramaKriterleri.nereden : '' %>">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Nereye</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-geo-alt-fill"></i></span>
+                            <input type="text" name="nereye" class="form-control" placeholder="Şehir..." value="<%= locals.aramaKriterleri ? aramaKriterleri.nereye : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label text-muted">Tarih</label>
+                        <input type="date" name="tarih" class="form-control" value="<%= locals.aramaKriterleri ? aramaKriterleri.tarih : '' %>">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label text-muted">Max Ücret (₺)</label>
+                        <input type="number" name="maxFiyat" class="form-control" placeholder="Örn: 500" value="<%= locals.aramaKriterleri ? aramaKriterleri.maxFiyat : '' %>">
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100" style="background: #FFD700; border: none; color: #0a1e4a; font-weight: bold;">
+                            <i class="bi bi-search"></i> Bul
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="page-header">
+            <h1>Mevcut Yolculuklar</h1>
+            <p>İstediğiniz kriterlere uygun <strong><%= yolculuklar.length %></strong> yolculuk listeleniyor.</p>
+        </div>
+
+        <div id="yolculuk-listesi">
+            
+            <% if (yolculuklar.length > 0) { %>
+                
+                <% yolculuklar.forEach(yolculuk => { %>
+                    
+                    <% if (yolculuk.bos_koltuk > 0) { %> 
+
+                        <div class="yolculuk-kart">
+                            <div class="yolculuk-ust">
+                                <div class="surucu-bilgi">
+                                    <div class="surucu-avatar-img">
+                                        <img src="<%= yolculuk.profil_foto && yolculuk.profil_foto !== 'default.png' ? '/uploads/' + yolculuk.profil_foto : '/images2/user (1).png' %>" 
+                                             alt="Sürücü" 
+                                             style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:bold; color:#0a1e4a; font-size:1.1rem;">
+                                            <%= yolculuk.surucu_adi || 'Sürücü' %>
+                                        </div>
+                                        
+                                        <div style="font-size:0.85rem; color:#FFD700; display: flex; align-items: center; gap: 4px;">
+                                            <% if (yolculuk.surucu_puan) { %>
+                                                <strong><%= yolculuk.surucu_puan %></strong>
+                                                
+                                                <% for(let i=1; i <= Math.floor(yolculuk.surucu_puan); i++) { %>
+                                                    <i class="bi bi-star-fill"></i>
+                                                <% } %>
+
+                                                <% if(yolculuk.surucu_puan % 1 !== 0) { %>
+                                                    <i class="bi bi-star-half"></i>
+                                                <% } %>
+
+                                            <% } else { %>
+                                                <span class="badge bg-secondary">Yeni Sürücü</span>
+                                            <% } %>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:1.6rem; font-weight:800; color:#0a1e4a;"><%= yolculuk.ucret %>₺</div>
+                                    <div style="font-size:0.8rem; color:#888;">kişi başı</div>
+                                </div>
+                            </div>
+
+                            <div class="guzergah-cubuk">
+                                <div>
+                                    <div class="sehir"><%= yolculuk.nereden %></div>
+                                    <div class="zaman"><%= yolculuk.saat %></div>
+                                </div>
+                                <div class="ok-isareti"></div>
+                                <div style="text-align:right;">
+                                    <div class="sehir"><%= yolculuk.nereye %></div>
+                                    <div class="zaman"><%= yolculuk.tarih %></div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                                <span class="badge bg-light text-dark border"><%= yolculuk.bos_koltuk %> Boş Koltuk</span>
+                                <span class="badge bg-light text-dark border"> <%= yolculuk.bagaj %> Bagaj</span>
+                                <span class="badge bg-light text-dark border"> <%= yolculuk.arac_bilgisi %></span>
+                            </div>
+
+                            <div class="card-actions">
+                                
+                                <% if (typeof aktifKullaniciId !== 'undefined' && aktifKullaniciId !== null && String(aktifKullaniciId) === String(yolculuk.surucu_id)) { %>
+                                
+                                    <button class="btn-modern btn-modern-edit" onclick="modalAc('<%= yolculuk.id %>', '<%= yolculuk.nereden %>', '<%= yolculuk.nereye %>', '<%= yolculuk.tarih %>', '<%= yolculuk.saat %>', '<%= yolculuk.ucret %>', '<%= yolculuk.bos_koltuk %>', '<%= yolculuk.arac_bilgisi %>')">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
+                                        Düzenle
+                                    </button>
+
+                                    <button class="btn-modern btn-modern-delete" onclick="yolculukSil('<%= yolculuk.id %>')">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg>
+                                        Sil
+                                    </button>
+
+                                <% } %>
+
+                                <a href="/odeme/<%= yolculuk.id %>" class="btn-modern btn-modern-primary" style="text-decoration: none; display: inline-block; text-align: center;">
+                                    Koltuk Ayırt
+                                </a>
+                            </div>
+
+                        </div>
+                    
+                    <% } %> <% }); %>
+
+            <% } else { %>
+                <div style="text-align:center; padding:3rem; background:white; border-radius:15px; border:1px solid #eee;">
+                    <h3 style="color:#0a1e4a;">Sonuç Bulunamadı</h3>
+                    <p style="color:#525151;">Farklı bir tarih veya güzergah deneyebilirsiniz.</p>
+                    <a href="/klonSayfa" class="btn btn-primary" style="background:#0a1e4a; border:none;">Yeni Arama Yap</a>
+                </div>
+            <% } %>
+
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-bottom:1.5rem; text-align:center; color:#0a1e4a;">Yolculuğu Düzenle</h2>
+            <form id="editForm">
+                <input type="hidden" id="edit-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nereden</label>
+                        <input type="text" id="edit-nereden" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nereye</label>
+                        <input type="text" id="edit-nereye" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tarih</label>
+                        <input type="date" id="edit-tarih" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Saat</label>
+                        <input type="time" id="edit-saat" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ücret (₺)</label>
+                        <input type="number" id="edit-ucret" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Boş Koltuk</label>
+                        <input type="number" id="edit-koltuk" min="1" max="4" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Araç Bilgisi</label>
+                    <input type="text" id="edit-arac" required>
+                </div>
+
+                <div class="modal-btn-group">
+                    <button type="button" class="btn-modal-cancel" onclick="modalKapat()">İptal</button>
+                    <button type="submit" class="btn-modal-save">Değişiklikleri Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Viento Car</h3>
+                <p>Türkiye'nin en güvenilir şehirlerarası araç paylaşım platformu.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Hızlı Linkler</h3>
+                <ul>
+                    <li><a href="/index#hakkimizda">Hakkımızda</a></li>
+                    <li><a href="/index#nasil-calisir">Nasıl Çalışır?</a></li>
+                    <li><a href="#">Güvenlik</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Yardım</h3>
+                <ul>
+                    <li><a href="#">SSS</a></li>
+                    <li><a href="#">İletişim</a></li>
+                    <li><a href="#">Kullanım Koşulları</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>İletişim</h3>
+                <ul>
+                    <li> vientocar@gmail.com</li>
+                    <li> +90 (212) 123 45 67</li>
+                    <li>📍 Ankara, Türkiye</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Viento Car. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        function yolculukSil(id) {
+            if(confirm("Bu yolculuğu silmek istediğinize emin misiniz?")) {
+                fetch('/yolculuk-sil/' + id, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => { alert(data.mesaj); location.reload(); })
+                .catch(err => alert("Hata oluştu."));
+            }
+        }
+
+        const modal = document.getElementById('editModal');
+        
+        function modalAc(id, nereden, nereye, tarih, saat, ucret, koltuk, arac) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-nereden').value = nereden;
+            document.getElementById('edit-nereye').value = nereye;
+            document.getElementById('edit-tarih').value = tarih;
+            document.getElementById('edit-saat').value = saat;
+            document.getElementById('edit-ucret').value = ucret;
+            document.getElementById('edit-koltuk').value = koltuk;
+            document.getElementById('edit-arac').value = arac;
+            modal.style.display = 'flex';
+        }
+
+        function modalKapat() {
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                id: document.getElementById('edit-id').value,
+                nereden: document.getElementById('edit-nereden').value,
+                nereye: document.getElementById('edit-nereye').value,
+                tarih: document.getElementById('edit-tarih').value,
+                saat: document.getElementById('edit-saat').value,
+                ucret: document.getElementById('edit-ucret').value,
+                bos_koltuk: document.getElementById('edit-koltuk').value,
+                arac_bilgisi: document.getElementById('edit-arac').value
+            };
+
+            fetch('/yolculuk-guncelle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(d => { alert(d.mesaj); location.reload(); })
+            .catch(e => alert("Güncelleme hatası"));
+        });
+
+        function rezervasyonYap(id) {
+            alert("Rezervasyon sistemi yakında aktif olacak! ID: " + id);
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

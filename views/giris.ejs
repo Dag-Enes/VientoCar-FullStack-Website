@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viento Car - Kayıt & Giriş</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark: #0a1e4a;
+            --gold: #FFD700;
+            --gold-glow: #FDB931;
+            --bg: #050d1f;
+            --card: #1a2d52;
+            --input-bg: #0f1d3a;
+            --text: #ffffff;
+            --muted: #b0b8c9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text);
+        }
+
+        header {
+            background: linear-gradient(135deg, #0a1e4a 0%, #0c2960 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .auth-box {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 40px rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-title {
+            text-align: center;
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: var(--muted);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+            accent-color: var(--gold);
+        }
+
+        .checkbox-group label {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-glow) 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+            color: var(--muted);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .social-btn {
+            padding: 0.9rem;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            background: var(--input-bg);
+            color: var(--text);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .forgot-password a:hover {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        footer {
+            background: #0a1e4a;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        footer p {
+            color: var(--muted);
+        }
+
+        .back-to-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .back-to-home:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold-glow);
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 2rem;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            nav {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .back-to-home {
+                position: static;
+                display: block;
+                width: fit-content;
+                margin: 0 auto 1.5rem auto;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/index" class="logo">
+                <span>Viento</span> Car
+            </a>
+        </nav>
+    </header>
+
+    <div class="auth-container">
+        <a href="/index" class="back-to-home">
+            &larr; Ana Sayfaya Dön
+        </a>
+        
+        <div class="auth-box">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="sekmeDegistir('giris')">Giriş Yap</button>
+                <button class="tab-btn" onclick="sekmeDegistir('kayit')">Kayıt Ol</button>
+            </div>
+
+            <div id="giris" class="tab-content active">
+                <h2 class="auth-title">Hoş Geldiniz</h2>
+                <form action="/giris-yap" method="POST">
+                    <div class="form-group">
+                        <label for="giris-eposta">E-posta</label>
+                        <input type="email" id="giris-eposta" name="email" placeholder="ornek@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="giris-sifre">Şifre</label>
+                        <input type="password" id="giris-sifre" name="sifre" placeholder="••••••••" required>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="beni-hatirla">
+                        <label for="beni-hatirla">Beni Hatırla</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Şifremi Unuttum?</a>
+                    </div>
+                    <button type="submit" class="btn-submit">Giriş Yap</button>
+                </form>
+                <div class="divider">veya</div>
+                <div class="social-login">
+                    <button class="social-btn">
+                        <span>🔵</span> Google ile Giriş Yap
+                    </button>
+                    <button class="social-btn">
+                        <span>📘</span> Facebook ile Giriş Yap
+                    </button>
+                </div>
+            </div>
+
+            <div id="kayit" class="tab-content">
+                <h2 class="auth-title">Hesap Oluştur</h2>
+                <form action="/kayit-ol" method="POST">
+                    <div class="form-group">
+                        <label for="kayit-ad">Ad Soyad</label>
+                        <input type="text" id="kayit-ad" name="ad_soyad" placeholder="Adınız Soyadınız" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kayit-eposta">E-posta</label>
+                        <input type="email" id="kayit-eposta" name="email" placeholder="ornek@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kayit-telefon">Telefon</label>
+                        <input type="tel" id="kayit-telefon" name="telefon" placeholder="0555 123 45 67" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kayit-sifre">Şifre</label>
+                        <input type="password" id="kayit-sifre" name="sifre" placeholder="En az 8 karakter" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kayit-sifre-tekrar">Şifre Tekrar</label>
+                        <input type="password" id="kayit-sifre-tekrar" placeholder="Şifrenizi tekrar girin" required>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="kosullar" required>
+                        <label for="kosullar">Kullanım koşullarını kabul ediyorum</label>
+                    </div>
+                    <button type="submit" class="btn-submit">Kayıt Ol</button>
+                </form>
+                <div class="divider">veya</div>
+                <div class="social-login">
+                    <button class="social-btn">
+                        <span>🔵</span> Google ile Kayıt Ol
+                    </button>
+                    <button class="social-btn">
+                        <span>📘</span> Facebook ile Kayıt Ol
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Viento Car. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        function sekmeDegistir(sekmeAdi) {
+            const sekmeler = document.querySelectorAll('.tab-btn');
+            const icerikler = document.querySelectorAll('.tab-content');
+
+            sekmeler.forEach(sekme => sekme.classList.remove('active'));
+            icerikler.forEach(icerik => icerik.classList.remove('active'));
+
+            if (sekmeAdi === 'giris') {
+                sekmeler[0].classList.add('active');
+                document.getElementById('giris').classList.add('active');
+            } else {
+                sekmeler[1].classList.add('active');
+                document.getElementById('kayit').classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

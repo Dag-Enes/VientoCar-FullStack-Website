@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yolculuk Ara - Viento Car</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .arama-sonuc-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .arama-basligi {
+            background: linear-gradient(135deg, var(--dark) 0%, #244f80 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .arama-basligi h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .arama-basligi p {
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .filtre-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .filtre-baslik {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filtre-grup {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .yolculuk-kart {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .yolculuk-kart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: var(--gold);
+        }
+
+        .yolculuk-ust {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .surucu-bilgi {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .surucu-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-2));
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .surucu-detay h3 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .surucu-puan {
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+
+        .fiyat-bilgi {
+            text-align: right;
+        }
+
+        .fiyat {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .fiyat-aciklama {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .yolculuk-guzergah {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .konum-nokta {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(212,175,55,0.5);
+        }
+
+        .konum-cizgi {
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--muted) 100%);
+            position: relative;
+        }
+
+        .konum-bilgi {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .saat-bilgi {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .yolculuk-detaylar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detay-oge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .arac-bilgi {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-rezervasyon {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-rezervasyon:hover {
+            background: #123a7a;
+            transform: translateY(-2px);
+        }
+
+        .sonuc-yok {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .sonuc-yok-ikon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .sonuc-bilgi {
+            background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05));
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--gold);
+        }
+
+        @media (max-width: 768px) {
+            .yolculuk-ust {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .fiyat-bilgi {
+                text-align: left;
+                width: 100%;
+            }
+
+            .filtre-grup {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a href="/index" class="logo d-flex align-items-center">
+                    <img src="images/viento_car_logo.jpg" alt="Viento Car Logo" class="logo-img">
+                    <span>Viento</span> Car
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                
+
+                    
+                </div>
+            </div>
+            <div class="user-menu">
+                <button  class="user-avatar" onclick="toggleUserMenu()"><img src="images2/user (1).png" alt=""  width="30" height="30"></button>  
+            
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="/profil">Profil Bilgilerim</a>
+                    <a href="/profil">Yolculuklarım</a>
+                    <a href="/index">Çıkış Yap</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="arama-sonuc-container">
+        <div class="arama-basligi">
+            <h1 id="guzergah-baslik">Yolculuk Sonuçları</h1>
+            <p id="tarih-bilgi">Arama sonuçlarınız yükleniyor...</p>
+        </div>
+
+        <div class="sonuc-bilgi">
+            <strong id="sonuc-sayisi">0</strong> yolculuk bulundu
+        </div>
+
+        <div class="filtre-panel">
+            <div class="filtre-baslik">🔍 Filtrele</div>
+            <div class="filtre-grup">
+                <div class="form-group">
+                    <label>Sıralama</label>
+                    <select id="siralama" class="form-control" onchange="sirala()">
+                        <option value="ucuz">En Ucuz</option>
+                        <option value="erken">En Erken</option>
+                        <option value="puan">En Yüksek Puan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Maksimum Fiyat</label>
+                    <input type="range" id="fiyat-filtre" class="form-range" min="0" max="500" value="500" oninput="fiyatFiltrele()">
+                    <div><span id="fiyat-deger">500</span>₺</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="yolculuk-listesi">
+            <!-- Yolculuklar buraya dinamik olarak eklenecek -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Viento Car</h3>
+                <p>Türkiye'nin en güvenilir şehirlerarası araç paylaşım platformu.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Hızlı Linkler</h3>
+                <ul>
+                    <li><a href="#">Hakkımızda</a></li>
+                    <li><a href="#">Nasıl Çalışır?</a></li>
+                    <li><a href="#">Güvenlik</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Yardım</h3>
+                <ul>
+                    <li><a href="#">SSS</a></li>
+                    <li><a href="#">İletişim</a></li>
+                    <li><a href="#">Kullanım Koşulları</a></li>
+                    <li><a href="#">Gizlilik Politikası</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>İletişim</h3>
+                <ul>
+                    <li>📧 vientocar@gmail.com</li>
+                    <li>📞 +90 (212) 123 45 67</li>
+                    <li>📍 Ankara, Türkiye</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Viento Car. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Örnek yolculuk verileri
+        let tumYolculuklar = [
+            {
+                id: 1,
+                nereden: "İstanbul",
+                nereye: "Ankara",
+                tarih: "2025-12-05",
+                saat: "09:00",
+                surucu: "Ahmet Yılmaz",
+                puan: 4.8,
+                fiyat: 250,
+                koltuk: 3,
+                arac: "Volkswagen Passat 2020 Beyaz",
+                bagaj: "Orta",
+                muzik: true,
+                sigara: false
+            },
+            {
+                id: 2,
+                nereden: "İstanbul",
+                nereye: "Ankara",
+                tarih: "2025-12-05",
+                saat: "14:30",
+                surucu: "Zeynep Kaya",
+                puan: 4.9,
+                fiyat: 280,
+                koltuk: 2,
+                arac: "BMW 3.20i 2019 Siyah",
+                bagaj: "Büyük",
+                muzik: true,
+                sigara: false
+            },
+            {
+                id: 3,
+                nereden: "İstanbul",
+                nereye: "Ankara",
+                tarih: "2025-12-05",
+                saat: "18:00",
+                surucu: "Mehmet Demir",
+                puan: 4.7,
+                fiyat: 220,
+                koltuk: 4,
+                arac: "Renault Megane 2018 Gri",
+                bagaj: "Küçük",
+                muzik: false,
+                sigara: false
+            }
+        ];
+
+        let filtreliYolculuklar = [];
+
+        // URL parametrelerini al
+        function urlParamAl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                nereden: urlParams.get('nereden') || '',
+                nereye: urlParams.get('nereye') || '',
+                tarih: urlParams.get('tarih') || ''
+            };
+        }
+
+        // Yolculukları filtrele
+        function yolculuklariFiltrele() {
+            const params = urlParamAl();
+            
+            filtreliYolculuklar = tumYolculuklar.filter(yolculuk => {
+                let eslesme = true;
+                
+                if (params.nereden && !yolculuk.nereden.toLowerCase().includes(params.nereden.toLowerCase())) {
+                    eslesme = false;
+                }
+                
+                if (params.nereye && !yolculuk.nereye.toLowerCase().includes(params.nereye.toLowerCase())) {
+                    eslesme = false;
+                }
+                
+                if (params.tarih && yolculuk.tarih !== params.tarih) {
+                    eslesme = false;
+                }
+                
+                return eslesme;
+            });
+
+            return filtreliYolculuklar;
+        }
+
+        // Başlık güncelle
+        function baslikGuncelle() {
+            const params = urlParamAl();
+            const baslik = document.getElementById('guzergah-baslik');
+            const tarihBilgi = document.getElementById('tarih-bilgi');
+            
+            if (params.nereden && params.nereye) {
+                baslik.textContent = `${params.nereden} → ${params.nereye}`;
+            }
+            
+            if (params.tarih) {
+                const tarihObj = new Date(params.tarih);
+                const gunler = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+                const aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+                
+                tarihBilgi.textContent = `${gunler[tarihObj.getDay()]}, ${tarihObj.getDate()} ${aylar[tarihObj.getMonth()]} ${tarihObj.getFullYear()}`;
+            }
+        }
+
+        // Yolculuk kartı oluştur
+        function yolculukKartiOlustur(yolculuk) {
+            const isimBas = yolculuk.surucu.split(' ').map(k => k[0]).join('');
+            
+            return `
+                <div class="yolculuk-kart">
+                    <div class="yolculuk-ust">
+                        <div class="surucu-bilgi">
+                            <div class="surucu-avatar">${isimBas}</div>
+                            <div class="surucu-detay">
+                                <h3>${yolculuk.surucu}</h3>
+                                <div class="surucu-puan">⭐ ${yolculuk.puan} · ${Math.floor(Math.random() * 50 + 10)} yolculuk</div>
+                            </div>
+                        </div>
+                        <div class="fiyat-bilgi">
+                            <div class="fiyat">${yolculuk.fiyat}₺</div>
+                            <div class="fiyat-aciklama">kişi başı</div>
+                        </div>
+                    </div>
+
+                    <div class="yolculuk-guzergah">
+                        <div>
+                            <div class="konum-bilgi">${yolculuk.nereden}</div>
+                            <div class="saat-bilgi">${yolculuk.saat}</div>
+                        </div>
+                        <div class="konum-cizgi"></div>
+                        <div>
+                            <div class="konum-bilgi">${yolculuk.nereye}</div>
+                            <div class="saat-bilgi">~${hesaplaSure(yolculuk.saat)}</div>
+                        </div>
+                    </div>
+
+                    <div class="yolculuk-detaylar">
+                        <div class="detay-oge">🪑 ${yolculuk.koltuk} boş koltuk</div>
+                        <div class="detay-oge">🧳 ${yolculuk.bagaj} bagaj</div>
+                        ${yolculuk.muzik ? '<div class="detay-oge">🎵 Müzik</div>' : ''}
+                        ${!yolculuk.sigara ? '<div class="detay-oge">🚭 Sigara yok</div>' : ''}
+                    </div>
+
+                    <div class="arac-bilgi">
+                        🚗 ${yolculuk.arac}
+                    </div>
+
+                    <button class="btn-rezervasyon" onclick="rezervasyonYap(${yolculuk.id})">
+                        Rezervasyon Yap
+                    </button>
+                </div>
+            `;
+        }
+
+        // Varış saati hesapla (örnek)
+        function hesaplaSure(baslangicSaat) {
+            const [saat, dakika] = baslangicSaat.split(':');
+            const yeniSaat = (parseInt(saat) + 4) % 24;
+            return `${yeniSaat.toString().padStart(2, '0')}:${dakika}`;
+        }
+
+        // Yolculukları listele
+        function yolculuklariListele(yolculuklar) {
+            const liste = document.getElementById('yolculuk-listesi');
+            const sonucSayisi = document.getElementById('sonuc-sayisi');
+            
+            sonucSayisi.textContent = yolculuklar.length;
+            
+            if (yolculuklar.length === 0) {
+                liste.innerHTML = `
+                    <div class="sonuc-yok">
+                        <div class="sonuc-yok-ikon">🔍</div>
+                        <h2>Üzgünüz, yolculuk bulunamadı</h2>
+                        <p>Arama kriterlerinizi değiştirerek tekrar deneyebilirsiniz.</p>
+                        <a href="index.html" class="btn btn-primary" style="margin-top: 1rem;">Yeni Arama Yap</a>
+                    </div>
+                `;
+            } else {
+                liste.innerHTML = yolculuklar.map(yolculukKartiOlustur).join('');
+            }
+        }
+
+        // Sıralama
+        function sirala() {
+            const siralama = document.getElementById('siralama').value;
+            
+            if (siralama === 'ucuz') {
+                filtreliYolculuklar.sort((a, b) => a.fiyat - b.fiyat);
+            } else if (siralama === 'erken') {
+                filtreliYolculuklar.sort((a, b) => a.saat.localeCompare(b.saat));
+            } else if (siralama === 'puan') {
+                filtreliYolculuklar.sort((a, b) => b.puan - a.puan);
+            }
+            
+            yolculuklariListele(filtreliYolculuklar);
+        }
+
+        // Fiyat filtresi
+        function fiyatFiltrele() {
+            const maxFiyat = document.getElementById('fiyat-filtre').value;
+            document.getElementById('fiyat-deger').textContent = maxFiyat;
+            
+            const filtrelenmis = yolculuklariFiltrele().filter(y => y.fiyat <= maxFiyat);
+            yolculuklariListele(filtrelenmis);
+        }
+
+        // Rezervasyon yap
+        function rezervasyonYap(yolculukId) {
+            alert(`Yolculuk #${yolculukId} için rezervasyon işlemi başlatılıyor...\n\nGiriş yapmanız gerekmektedir.`);
+            window.location.href = 'giriş.html';
+        }
+
+        // Sayfa yüklendiğinde
+        window.addEventListener('DOMContentLoaded', function() {
+            baslikGuncelle();
+            const sonuclar = yolculuklariFiltrele();
+            yolculuklariListele(sonuclar);
+        });
+
+        function toggleUserMenu() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

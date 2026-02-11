@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme - Viento Car</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GENEL SAYFA YAPISI --- */
+        body {
+            background: linear-gradient(135deg, #050d1f 0%, #0a1e4a 100%);
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR (Header) */
+        .navbar {
+            background: rgba(10, 30, 74, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo span { color: #FFD700; }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            transition: 0.3s;
+            margin: 0 10px;
+        }
+        
+        .nav-link:hover { color: #FFD700 !important; }
+
+        /* --- ANA İÇERİK --- */
+        .payment-container {
+            max-width: 1140px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* ORTAK KART TASARIMI */
+        .custom-card {
+            background: rgba(20, 35, 65, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header-title {
+            color: #FFD700;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* DETAY SATIRLARI */
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #aaa; }
+        .detail-val { font-weight: 600; color: #fff; }
+
+        /* --- KOLTUK BUTONLARI --- */
+        .seat-selector { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .seat-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            min-width: 80px;
+        }
+
+        .seat-btn:hover { background: rgba(255, 215, 0, 0.2); border-color: #FFD700; }
+        
+        .seat-btn.active {
+            background: #FFD700;
+            color: #000;
+            font-weight: bold;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* --- FORM ELEMANLARI (DARK TEMA) --- */
+        .dark-input {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .dark-input:focus {
+            background: rgba(0, 0, 0, 0.5) !important;
+            border-color: #FFD700 !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.15) !important;
+            color: #fff !important;
+        }
+        .dark-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-label { color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+        /* ÖDEME YÖNTEMİ TABLARI */
+        .payment-tabs { display: flex; gap: 15px; margin-bottom: 20px; }
+        .p-tab {
+            flex: 1; text-align: center; padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px; cursor: pointer; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .p-tab.active {
+            border-color: #FFD700; background: rgba(255, 215, 0, 0.1); color: #FFD700;
+        }
+
+        /* --- SAĞ TARAF (STICKY ÖZET) --- */
+        .sticky-summary {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 2rem;
+            z-index: 99;
+        }
+
+        .summary-box {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .total-price-display {
+            font-size: 2.2rem; color: #FFD700; font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.2); margin-top: 10px; display: block;
+        }
+
+        .btn-pay-gold {
+            width: 100%;
+            background: linear-gradient(90deg, #FFD700, #ffb700);
+            color: #000; font-weight: bold; font-size: 1.1rem;
+            border: none; padding: 15px; border-radius: 10px;
+            margin-top: 20px; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        .btn-pay-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(90deg, #ffb700, #FFD700);
+        }
+
+        .card-preview {
+            position: absolute; right: 20px; top: 50px; opacity: 0.1;
+            font-size: 8rem; color: #FFD700; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid container">
+                <a href="/" class="logo">
+                    <span>Viento</span> Car
+                </a>
+                
+                <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a href="/" class="nav-link">Ana Sayfa</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link active">Ödeme</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="payment-container">
+        
+        <a href="javascript:history.back()" style="color: #FFD700; text-decoration: none; display: inline-block; margin-bottom: 1.5rem;">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+
+        <div class="row">
+            <div class="col-lg-8">
+                
+                <div class="custom-card">
+                    <h3 class="card-header-title"><i class="fas fa-route"></i> Yolculuk Özeti</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Güzergah</span>
+                        <span class="detail-val"><%= yolculuk.nereden %> → <%= yolculuk.nereye %></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tarih & Saat</span>
+                        <span class="detail-val"><%= yolculuk.tarih %> | <%= yolculuk.saat %></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Sürücü</span>
+                        <span class="detail-val"><%= yolculuk.surucu_adi %></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Araç</span>
+                        <span class="detail-val"><%= yolculuk.arac_bilgisi %></span>
+                    </div>
+                </div>
+
+                <div class="custom-card">
+                    <h3 class="card-header-title"><i class="fas fa-users"></i> Yolcu Sayısı</h3>
+                    <p style="color: #aaa; font-size: 0.9rem;">Kaç kişilik bilet almak istiyorsunuz?</p>
+                    
+                    <div class="seat-selector">
+                        <% for(let i = 1; i <= Number(yolculuk.bos_koltuk); i++) { %>
+                            <button type="button" class="seat-btn <%= i === 1 ? 'active' : '' %>" 
+                                    onclick="koltukSec(<%= i %>, <%= yolculuk.ucret %>)">
+                                <%= i %> Kişi
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="custom-card" style="position: relative; overflow: hidden;">
+                    <i class="fas fa-credit-card card-preview"></i>
+                    
+                    <h3 class="card-header-title"><i class="fas fa-wallet"></i> Kart Bilgileri</h3>
+                    
+                    <div class="payment-tabs">
+                        <div class="p-tab active" onclick="tabSec(this)">Kredi Kartı</div>
+                        <div class="p-tab" onclick="tabSec(this)">Banka Kartı</div>
+                    </div>
+
+                    <form id="payment-form">
+                        <input type="hidden" name="yolculukId" value="<%= yolculuk.id %>">
+                        <input type="hidden" name="koltukSayisi" id="koltuk_sayisi" value="1">
+                        
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Kart Üzerindeki İsim</label>
+                                <input type="text" name="kartSahibi" class="form-control dark-input" placeholder="AD SOYAD" required>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label">Kart Numarası</label>
+                                <div class="input-group">
+                                    <input type="text" name="kartNo" class="form-control dark-input" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                                    <span class="input-group-text dark-input" style="border-left:none;"><i class="fas fa-lock"></i></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 col-6">
+                                <label class="form-label">Ay</label>
+                                <select name="sktAy" class="form-select dark-input" required>
+                                    <option value="" disabled selected>Ay</option>
+                                    <% for(let k=1; k<=12; k++) { %>
+                                        <option value="<%= k %>"><%= k < 10 ? '0'+k : k %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 col-6">
+                                <label class="form-label">Yıl</label>
+                                <select name="sktYil" class="form-select dark-input" required>
+                                    <option value="" disabled selected>Yıl</option>
+                                    <% for(let y=2024; y<=2035; y++) { %>
+                                        <option value="<%= y %>"><%= y %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 col-12">
+                                <label class="form-label">CVV</label>
+                                <input type="text" name="cvv" class="form-control dark-input" placeholder="***" maxlength="3" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-summary">
+                    <div class="custom-card summary-box">
+                        <h4 class="mb-4" style="color: #fff;">Ödenecek Tutar</h4>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">Birim Fiyat</span>
+                            <span class="detail-val"><%= yolculuk.ucret %> ₺</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Koltuk Adedi</span>
+                            <span class="detail-val" id="ozet-adet">1</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Hizmet Bedeli</span>
+                            <span class="detail-val">25 ₺</span>
+                        </div>
+                        
+                        <hr style="border-color: rgba(255,255,255,0.2); margin: 20px 0;">
+                        
+                        <div class="text-end">
+                            <span style="display:block; color:#aaa; font-size:0.9rem;">TOPLAM</span>
+                            <span class="total-price-display" id="toplam-fiyat">
+                                <%= (Number(yolculuk.ucret) + 25) %> ₺
+                            </span>
+                        </div>
+
+                        <button type="button" class="btn-pay-gold" onclick="odemeOnayla()">
+                            <i class="fas fa-lock me-2"></i> Güvenli Öde
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <i class="fas fa-shield-alt text-success"></i>
+                            <span style="font-size: 0.8rem; color: #aaa;"> 256-Bit SSL ile korunmaktadır</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Verileri sayı olarak alıyoruz
+        const birimFiyat = Number(<%= yolculuk.ucret %>); 
+        const hizmetBedeli = 25;
+
+        // Koltuk Seçimi
+        function koltukSec(adet, fiyat) {
+            document.querySelectorAll('.seat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const anaTutar = birimFiyat * adet;
+            const genelToplam = anaTutar + hizmetBedeli;
+
+            document.getElementById('ozet-adet').innerText = adet;
+            document.getElementById('toplam-fiyat').innerText = genelToplam + " ₺";
+            document.getElementById('koltuk_sayisi').value = adet;
+        }
+
+        // Tab Değişimi
+        function tabSec(element) {
+            document.querySelectorAll('.p-tab').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // ÖDEME ONAY (FETCH API İLE)
+        async function odemeOnayla() {
+            const form = document.getElementById('payment-form');
+
+            // 1. Validasyon
+            if(!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // 2. Kullanıcı Onayı
+            if(!confirm('Ödemeyi onaylıyor musunuz?')) {
+                return;
+            }
+
+            // 3. Verileri hazırla
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                // 4. Sunucuya istek at (Sayfa yenilenmeden)
+                const response = await fetch('/odeme-yap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // BAŞARILI İSE -> Profil sayfasına git
+                    alert("✅ " + result.mesaj);
+                    window.location.href = '/profil';
+                } else {
+                    // HATA İSE -> Uyarı ver
+                    alert("❌ " + (result.mesaj || 'İşlem başarısız.'));
+                }
+
+            } catch (error) {
+                console.error('Hata:', error);
+                alert("❌ Sunucu ile bağlantı kurulamadı.");
+            }
+        }
+
+        // Kart Numarası Formatı
+        const kartInput = document.querySelector('input[name="kartNo"]');
+        if(kartInput) {
+            kartInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+            });
+        }
+    </script>
+</body>
+</html>

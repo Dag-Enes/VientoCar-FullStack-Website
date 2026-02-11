@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yolculuk Ekle - Viento Car</title>
+   
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="yolculuk-ekle.css">
+</head>
+<body>
+    <!-- ===== HEADER (BAŞLIK ÇUBUĞU) ===== -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid px-4">
+                <a href="index.html" class="navbar-brand logo">
+                    <img src="images/viento_car_logo.jpg" alt="Viento Car Logo" class="logo-img">
+                    <span>Viento</span> Car
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item"><a class="nav-link" href="index.html#arama">Yolculuk Ara</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="#yolculuk-ekle">Yolculuk Ekle</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html#nasil-calisir">Nasıl Çalışır?</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html#hakkimizda">Hakkımızda</a></li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <a href="giris.html" class="btn btn-outline-light btn-sm">Giriş Yap</a>
+                        <a href="giris.html" class="btn btn-warning btn-sm text-dark fw-bold">Kayıt Ol</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ===== SAYFA BAŞLIĞI ===== -->
+    <section class="page-header">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">Yolculuğunu <span class="text-warning">Paylaş</span></h1>
+            <p class="lead">Güzergahını belirle, koltuklarını paylaş ve yolculuk masraflarını azalt</p>
+        </div>
+    </section>
+
+    <!-- ===== YOLCULUK EKLEME FORMU ===== -->
+    <section class="form-section py-5">
+        <div class="container">
+            <!-- İlerleme Çubuğu -->
+            <div class="progress-container mb-5">
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-warning" id="progressBar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-circle"><i class="bi bi-geo-alt-fill"></i></div>
+                        <small class="step-text">Güzergah</small>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-circle"><i class="bi bi-info-circle-fill"></i></div>
+                        <small class="step-text">Detaylar</small>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-circle"><i class="bi bi-car-front-fill"></i></div>
+                        <small class="step-text">Araç</small>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-circle"><i class="bi bi-check-circle-fill"></i></div>
+                        <small class="step-text">Tamamla</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Kartı -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <form id="journeyForm">
+                                <!-- ADIM 1: Güzergah Bilgileri -->
+                                <div class="form-step active" data-step="1">
+                                    <div class="step-header mb-4">
+                                        <span class="badge bg-primary mb-2">Adım 1/4</span>
+                                        <h3 class="mb-2"><i class="bi bi-geo-alt me-2"></i>Güzergah Bilgileri</h3>
+                                        <p class="text-muted">Kalkış ve varış noktalarınızı belirleyin</p>
+                                    </div>
+
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Kalkış Noktası *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-geo-fill text-success"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="kalkis" placeholder="Örn: İstanbul" required>
+                                            </div>
+                                            <div class="form-text">Şehir veya ilçe adı</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Varış Noktası *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-geo-fill text-danger"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="varis" placeholder="Örn: Ankara" required>
+                                            </div>
+                                            <div class="form-text">Şehir veya ilçe adı</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Tarih *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                                <input type="date" class="form-control form-control-lg" id="tarih" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Kalkış Saati *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                                <input type="time" class="form-control form-control-lg" id="saat" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="btn btn-primary btn-lg px-5" onclick="nextStep()">
+                                            Devam Et <i class="bi bi-arrow-right ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- ADIM 2: Yolculuk Detayları -->
+                                <div class="form-step" data-step="2">
+                                    <div class="step-header mb-4">
+                                        <span class="badge bg-primary mb-2">Adım 2/4</span>
+                                        <h3 class="mb-2"><i class="bi bi-info-circle me-2"></i>Yolculuk Detayları</h3>
+                                        <p class="text-muted">Koltuk sayısı ve fiyat bilgilerini girin</p>
+                                    </div>
+
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Boş Koltuk Sayısı *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-people"></i></span>
+                                                <select class="form-select form-select-lg" id="yolcu" required>
+                                                    <option value="">Seçiniz</option>
+                                                    <option value="1">1 Koltuk</option>
+                                                    <option value="2">2 Koltuk</option>
+                                                    <option value="3">3 Koltuk</option>
+                                                    <option value="4">4 Koltuk</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Koltuk Başı Fiyat (₺) *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                                                <input type="number" class="form-control form-control-lg" id="fiyat" placeholder="150" min="0" required>
+                                                <span class="input-group-text">₺</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label class="form-label fw-bold">Tercihler</label>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-custom">
+                                                    <input class="form-check-input" type="checkbox" name="tercih" value="sigara" id="check1">
+                                                    <label class="form-check-label" for="check1">
+                                                        <i class="bi bi-slash-circle text-danger me-2"></i>Sigara içilmez
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-custom">
+                                                    <input class="form-check-input" type="checkbox" name="tercih" value="evcil" id="check2">
+                                                    <label class="form-check-label" for="check2">
+                                                        <i class="bi bi-x-circle text-danger me-2"></i>Evcil hayvan kabul edilmez
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-custom">
+                                                    <input class="form-check-input" type="checkbox" name="tercih" value="muzik" id="check3">
+                                                    <label class="form-check-label" for="check3">
+                                                        <i class="bi bi-music-note-beamed text-success me-2"></i>Müzik dinlenebilir
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-custom">
+                                                    <input class="form-check-input" type="checkbox" name="tercih" value="konusma" id="check4">
+                                                    <label class="form-check-label" for="check4">
+                                                        <i class="bi bi-volume-mute text-primary me-2"></i>Sessiz yolculuk tercih ederim
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="prevStep()">
+                                            <i class="bi bi-arrow-left me-2"></i>Geri
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-lg px-5" onclick="nextStep()">
+                                            Devam Et <i class="bi bi-arrow-right ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- ADIM 3: Araç Bilgileri -->
+                                <div class="form-step" data-step="3">
+                                    <div class="step-header mb-4">
+                                        <span class="badge bg-primary mb-2">Adım 3/4</span>
+                                        <h3 class="mb-2"><i class="bi bi-car-front me-2"></i>Araç Bilgileri</h3>
+                                        <p class="text-muted">Aracınızın detaylarını girin</p>
+                                    </div>
+
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Araç Markası *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-car-front-fill"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="marka" placeholder="Örn: Toyota" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Araç Modeli *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-card-heading"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="model" placeholder="Örn: Corolla" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Araç Rengi</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-palette"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="renk" placeholder="Örn: Beyaz">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Plaka (Son 2 hane)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                                <input type="text" class="form-control form-control-lg" id="plaka" placeholder="Örn: 34" maxlength="2">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="prevStep()">
+                                            <i class="bi bi-arrow-left me-2"></i>Geri
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-lg px-5" onclick="nextStep()">
+                                            Devam Et <i class="bi bi-arrow-right ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- ADIM 4: Ek Bilgiler -->
+                                <div class="form-step" data-step="4">
+                                    <div class="step-header mb-4">
+                                        <span class="badge bg-primary mb-2">Adım 4/4</span>
+                                        <h3 class="mb-2"><i class="bi bi-check-circle me-2"></i>Ek Bilgiler</h3>
+                                        <p class="text-muted">Yolculukla ilgili ek detayları ekleyin</p>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Yolculuk Açıklaması</label>
+                                        <textarea class="form-control" id="aciklama" rows="5" placeholder="Yolculukla ilgili eklemek istediğiniz detayları buraya yazabilirsiniz...&#10;&#10;• Ara duraklar&#10;• Bagaj kapasitesi&#10;• Diğer özel notlar"></textarea>
+                                        <div class="form-text">Ara durak, bagaj kapasitesi gibi bilgileri ekleyebilirsiniz</div>
+                                    </div>
+
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                                        <div>
+                                            <strong>Bilgilendirme:</strong> Yolculuğunuzu yayınladıktan sonra düzenleyebilir veya iptal edebilirsiniz.
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="prevStep()">
+                                            <i class="bi bi-arrow-left me-2"></i>Geri
+                                        </button>
+                                        <button type="submit" class="btn btn-success btn-lg px-5">
+                                            <i class="bi bi-check-circle me-2"></i>Yolculuğu Yayınla
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-warning mb-3">Viento Car</h5>
+                    <p class="text-white-50">Türkiye'nin en güvenilir şehirlerarası araç paylaşım platformu.</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-warning mb-3">Hızlı Linkler</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Hakkımızda</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Nasıl Çalışır?</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Güvenlik</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-warning mb-3">Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">SSS</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">İletişim</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Kullanım Koşulları</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-warning mb-3">İletişim</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>vientocar@gmail.com</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+90 (212) 123 45 67</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Ankara, Türkiye</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-white opacity-25">
+            <div class="text-center text-white-50">
+                <p class="mb-0">&copy; 2025 Viento Car. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="yolculuk-ekle.js"></script>
+</body>
+</html>
