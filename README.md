@@ -1,2 +1,3 @@
 # VientoCar-FullStack-Website
-Full-stack car rental web application built with Node.js, Express, MySQL and Bootstrap.
+Full-stack web application that connects travelers for intercity journeys, built with Node.js, Express.js and MySQL.
+
